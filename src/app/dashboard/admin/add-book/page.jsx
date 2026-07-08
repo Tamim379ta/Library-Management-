@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Input, TextArea, Button, Dropdown, Label } from "@heroui/react";
+import { postBook } from "@/lib/action/book";
 
 const genres = [
   "Fiction", "Non-Fiction", "Science Fiction", "Fantasy", "Mystery",
@@ -43,7 +44,7 @@ const BookAddPage = () => {
     try {
       const data = new FormData();
       data.append("image", imageFile);
-      const res = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`, {
+      const res = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`, {
         method: "POST",
         body: data,
       });
@@ -68,6 +69,7 @@ const BookAddPage = () => {
     const finalData = { ...formData, coverImage: coverImageUrl };
     console.log("Book Data:", finalData);
     // call your API here later with finalData
+    await postBook(finalData);
   };
 
   return (
