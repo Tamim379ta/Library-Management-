@@ -11,6 +11,9 @@ import {
   Label,
   TextField,
 } from "@heroui/react";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const fields = [
   {
@@ -56,19 +59,33 @@ const fields = [
 ];
 
 const SignUpPage = () => {
-  const onSubmit = (e) => {
+  const router = useRouter();
+  const onSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
+    const { name, email, password, confirmPassword } = Object.fromEntries(formData.entries());
 
-    if (data.password !== data.confirmPassword) {
+    if (password !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
 
-    console.log("Sign up data:", data);
-  };
+    const { data, error } = await authClient.signUp.email({
+      email,
+      password,
+      name,
+    });
+    if(data){
+      toast.success("Account created successfully!");
+      router.push("/")
+    }
 
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
+  };
   return (
     <div
       className="min-h-screen flex items-center justify-center p-6 md:p-10"

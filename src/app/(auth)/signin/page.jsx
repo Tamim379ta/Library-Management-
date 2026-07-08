@@ -10,6 +10,9 @@ import {
   Label,
   TextField,
 } from "@heroui/react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
 
 const fields = [
   {
@@ -34,12 +37,27 @@ const fields = [
 ];
 
 const SignInPage = () => {
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget).entries());
-    console.log("Sign in data:", data);
-    // TODO: hook up Better Auth signIn here
-  };
+  const router = useRouter();
+const onSubmit = async (e) => {
+  e.preventDefault();
+  const { email, password } = Object.fromEntries(new FormData(e.currentTarget).entries());
+
+  const { data, error } = await authClient.signIn.email({
+    email,
+    password,
+  });
+
+  if(data){
+    toast.success("Signed in successfully!");
+    router.push("/");
+  }
+
+  if (error) {
+    toast.error(error.message);
+    return;
+  }
+
+};
 
   return (
     <div

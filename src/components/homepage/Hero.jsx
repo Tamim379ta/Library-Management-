@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 const Hero = () => {
   return (
@@ -60,12 +61,18 @@ const Hero = () => {
             className="flex flex-wrap justify-center lg:justify-start gap-4 mt-2 anim-fadeup"
             style={{ animationDelay: '0.5s' }}
           >
-            <button className="bg-white text-[#3F5F53] font-semibold px-8 py-3.5 rounded-full hover:bg-[#E6F2DD] hover:-translate-y-0.5 active:scale-95 transition-all duration-200 shadow-md">
+            <Link
+              href="/books"
+              className="bg-white text-[#3F5F53] font-semibold px-8 py-3.5 rounded-full hover:bg-[#E6F2DD] hover:-translate-y-0.5 active:scale-95 transition-all duration-200 shadow-md"
+            >
               Browse Books
-            </button>
-            <button className="border-2 border-white/60 text-white font-semibold px-8 py-3.5 rounded-full hover:bg-white/10 hover:-translate-y-0.5 active:scale-95 transition-all duration-200">
+            </Link>
+            <Link
+              href="/signin"
+              className="border-2 border-white/60 text-white font-semibold px-8 py-3.5 rounded-full hover:bg-white/10 hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
+            >
               Sign In
-            </button>
+            </Link>
           </div>
         </div>
 
