@@ -21,7 +21,10 @@ const AllBooksPage = async () => {
       {allBooks?.length === 0 ? (
         <p className="text-center mt-20" style={{ color: "#88BDA4" }}>No books found.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div
+          className="grid gap-4"
+          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))" }}
+        >
           {allBooks?.map((book) => (
             <BookCard key={book._id} book={book} />
           ))}

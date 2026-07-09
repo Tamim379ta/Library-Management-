@@ -25,7 +25,6 @@ const adminNavItems = [
 
 const studentNavItems = [
   { icon: House, label: "Dashboard", href: "/dashboard/student" },
-  { icon: BookOpen, label: "Browse Books", href: "/dashboard/student/books" },
   { icon: SquareListUl, label: "My Borrows", href: "/dashboard/student/my-borrows" },
   { icon: Person, label: "Update Profile", href: "/dashboard/student/update-profile" },
 ];

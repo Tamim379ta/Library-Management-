@@ -1,0 +1,99 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { borrowBook } from '@/lib/action/borrow';
+import toast from 'react-hot-toast';
+import { getUserSession } from '@/lib/core/session';
+
+const BorrowButton = ({ bookId, isAvailable }) => {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+ 
+
+  const handleBorrow = async () => {
+    const user = await getUserSession();
+    if (!user) {
+      toast.error('You must be logged in to borrow a book.');
+      router.push('/signin');
+      setOpen(false);
+      return;
+    }
+    if(user.role !== 'student') {
+      toast.error('Only students can borrow books.');
+      setOpen(false);
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await borrowBook(bookId);
+
+      if (!res || !res.success) {
+        throw new Error(res?.error || 'Failed to borrow');
+      }
+
+      setOpen(false);
+      toast.success('Book borrowed successfully!');
+      setLoading(false);
+      router.refresh();
+    } catch (err) {
+      toast.error(err.message || 'Failed to borrow book.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        disabled={!isAvailable}
+        className="px-5 py-2 rounded-lg text-sm font-medium text-white"
+        style={{ backgroundColor: isAvailable ? "#659287" : "#B1D3B9", cursor: isAvailable ? "pointer" : "not-allowed" }}
+      >
+        Borrow book
+      </button>
+
+      {/* Modal */}
+      {open && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+        >
+          <div
+            className="rounded-2xl p-6 w-full max-w-sm mx-4"
+            style={{ background: "white", border: "0.5px solid #B1D3B9" }}
+          >
+            <h2 className="text-base font-semibold mb-1" style={{ color: "#2d4f48" }}>
+              Confirm borrow
+            </h2>
+            <p className="text-sm mb-6" style={{ color: "#88BDA4" }}>
+              You'll have 14 days to return this book. Are you sure you want to borrow it?
+            </p>
+
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setOpen(false)}
+                className="px-4 py-2 rounded-lg text-sm"
+                style={{ border: "0.5px solid #B1D3B9", color: "#659287", background: "white" }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBorrow}
+                disabled={loading}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-white"
+                style={{ backgroundColor: "#659287" }}
+              >
+                {loading ? "Borrowing..." : "Yes, borrow"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default BorrowButton;

@@ -1,57 +1,59 @@
-import React from 'react';
+import Link from "next/link";
 
 const BookCard = ({ book }) => {
+  const getAvailabilityStatus = () => {
+    if (book.availableQuantity > 0) {
+      return { label: `Available (${book.availableQuantity})`, color: "#659287" };
+    }
+    return { label: "Unavailable", color: "#f87171" };
+  };
+
+  const status = getAvailabilityStatus();
+
   return (
-    <div
-      className="rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow duration-300 flex flex-col"
-    >
-      {/* Cover Image */}
-      <div className="relative w-full h-52 overflow-hidden" style={{ backgroundColor: "#B1D3B9" }}>
-        {book.coverImage ? (
-          <img
-            src={book.coverImage}
-            alt={book.title}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-5xl">
-            📚
-          </div>
-        )}
-        {/* Genre Badge */}
-        <span
-          className="absolute top-2 right-2 text-xs font-medium px-2 py-1 rounded-full text-white"
-          style={{ backgroundColor: "#659287" }}
+    <Link href={`/books/${book._id}`} className="no-underline">
+      <div className="flex flex-col gap-2 cursor-pointer w-[140px]">
+        {/* Cover */}
+        <div
+          className="w-full rounded-lg overflow-hidden flex-shrink-0"
+          style={{ height: "200px", backgroundColor: "#B1D3B9" }}
         >
-          {book.genre}
-        </span>
-      </div>
+          {book.coverImage ? (
+            <img
+              src={book.coverImage}
+              alt={book.title}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-5xl">
+              📚
+            </div>
+          )}
+        </div>
 
-      {/* Content */}
-      <div className="p-4 flex flex-col gap-2 flex-1">
-        <h3 className="font-bold text-base leading-tight line-clamp-2" style={{ color: "#659287" }}>
-          {book.title}
-        </h3>
-        <p className="text-sm" style={{ color: "#88BDA4" }}>by {book.author}</p>
-
-        {book.description && (
-          <p className="text-xs text-gray-400 line-clamp-2 mt-1">{book.description}</p>
-        )}
-
-        {/* Availability */}
-        <div className="mt-auto pt-3 flex items-center justify-between border-t" style={{ borderColor: "#E6F2DD" }}>
-          <span className="text-xs text-gray-400">
-            Available
-          </span>
-          <span
-            className="text-sm font-semibold"
-            style={{ color: book.availableQuantity > 0 ? "#659287" : "#f87171" }}
+        {/* Info */}
+        <div className="flex flex-col gap-1">
+          <p
+            className="text-sm font-medium leading-tight truncate"
+            style={{ color: "var(--text-primary)" }}
           >
-            {book.availableQuantity} / {book.totalQuantity}
-          </span>
+            {book.title}
+          </p>
+          <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+            {book.author}
+          </p>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span
+              className="w-2 h-2 rounded-full flex-shrink-0"
+              style={{ backgroundColor: status.color }}
+            />
+            <span className="text-xs font-medium" style={{ color: status.color }}>
+              {status.label}
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
