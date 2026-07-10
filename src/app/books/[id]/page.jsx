@@ -90,9 +90,10 @@ const BookDetailsPage = async ({ params }) => {
                 {isAvailable ? "Available to borrow" : "Currently unavailable"}
               </span>
             </div>
+            
 
             {/* Actions */}
-            <BorrowButton bookId={book._id} isAvailable={isAvailable} />
+            <BorrowButton bookId={book._id} isAvailable={isAvailable} title={book.title} />
           </div>
         </div>
 

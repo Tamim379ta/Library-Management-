@@ -4,30 +4,16 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { borrowBook } from '@/lib/action/borrow';
 import toast from 'react-hot-toast';
-import { getUserSession } from '@/lib/core/session';
 
-const BorrowButton = ({ bookId, isAvailable }) => {
+const BorrowButton = ({ bookId, isAvailable, title }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
- 
 
   const handleBorrow = async () => {
-    const user = await getUserSession();
-    if (!user) {
-      toast.error('You must be logged in to borrow a book.');
-      router.push('/signin');
-      setOpen(false);
-      return;
-    }
-    if(user.role !== 'student') {
-      toast.error('Only students can borrow books.');
-      setOpen(false);
-      return;
-    }
     setLoading(true);
     try {
-      const res = await borrowBook(bookId);
+      const res = await borrowBook(bookId, title);
 
       if (!res || !res.success) {
         throw new Error(res?.error || 'Failed to borrow');
@@ -35,7 +21,6 @@ const BorrowButton = ({ bookId, isAvailable }) => {
 
       setOpen(false);
       toast.success('Book borrowed successfully!');
-      setLoading(false);
       router.refresh();
     } catch (err) {
       toast.error(err.message || 'Failed to borrow book.');
@@ -55,7 +40,6 @@ const BorrowButton = ({ bookId, isAvailable }) => {
         Borrow book
       </button>
 
-      {/* Modal */}
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center"
