@@ -1,11 +1,16 @@
 import BorrowButton from '@/components/book/BorrowBtn';
 import { getBookById } from '@/lib/api/book';
+import { getBorrowedBooks } from '@/lib/api/borrow';
+import { getUserSession } from '@/lib/core/session';
 import Link from 'next/link';
 
 const BookDetailsPage = async ({ params }) => {
   const { id } = await params;
   const book = await getBookById(id);
-  
+  const borrowedBooks = await getBorrowedBooks();
+  const user = await getUserSession();
+  const userId = user?.id;
+  const filteredBooks = borrowedBooks.filter((borrow) => borrow.userId === userId);
 
   if (!book) {
     return (
@@ -90,10 +95,15 @@ const BookDetailsPage = async ({ params }) => {
                 {isAvailable ? "Available to borrow" : "Currently unavailable"}
               </span>
             </div>
-            
+
 
             {/* Actions */}
-            <BorrowButton bookId={book._id} isAvailable={isAvailable} title={book.title} />
+            <BorrowButton
+              bookId={book._id}
+              isAvailable={isAvailable}
+              title={book.title}
+              filteredBooks={filteredBooks}
+            />
           </div>
         </div>
 

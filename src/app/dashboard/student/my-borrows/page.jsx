@@ -2,11 +2,13 @@ import { Table, Button, Chip } from '@heroui/react';
 import { getBorrowedBooks } from '@/lib/api/borrow';
 import { getUserSession } from '@/lib/core/session';
 import React from 'react';
+import DeleteBorrowModal from '@/components/student/DeleteBorrowModal';
 
 const MyBorrowBooks = async () => {
   const borrowedBooks = await getBorrowedBooks();
   const user = await getUserSession();
   const userId = user?.id;
+  const filteredBooks = borrowedBooks.filter((borrow) => borrow.userId === userId);
 
   return (
     <div>
@@ -21,7 +23,7 @@ const MyBorrowBooks = async () => {
               <Table.Column>Action</Table.Column>
             </Table.Header>
             <Table.Body>
-              {borrowedBooks.map((borrow) => (
+              {filteredBooks.map((borrow) => (
                 <Table.Row key={borrow._id}>
                   <Table.Cell>{borrow.title}</Table.Cell>
                   <Table.Cell>
@@ -40,9 +42,7 @@ const MyBorrowBooks = async () => {
                     </Chip>
                   </Table.Cell>
                   <Table.Cell>
-                    <Button color="danger" size="sm" variant="flat">
-                      Delete
-                    </Button>
+                    <DeleteBorrowModal borrow={borrow} />
                   </Table.Cell>
                 </Table.Row>
               ))}

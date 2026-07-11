@@ -6,15 +6,22 @@ const client = new MongoClient(process.env.MONGO_URI);
 const db = client.db("bookbridge");
 
 export const auth = betterAuth({
-  database: mongodbAdapter(db, {
-    client
-  }),
+  database: mongodbAdapter(db, { client }),
   emailAndPassword: {
-    enabled: true
-  }, user: {
+    enabled: true,
+  },
+  user: {
     additionalFields: {
       role: {
         defaultValue: "student",
+      },
+      roll: {
+        type: "string",
+        required: true,
+      },
+      dept: {
+        type: "string",
+        required: true,
       },
     },
   },

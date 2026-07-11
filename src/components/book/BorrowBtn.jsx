@@ -2,23 +2,28 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { borrowBook } from '@/lib/action/borrow';
+import { borrowBook, returnBook } from '@/lib/action/borrow';
 import toast from 'react-hot-toast';
 
-const BorrowButton = ({ bookId, isAvailable, title }) => {
+const BorrowButton = ({ bookId, isAvailable, title, filteredBooks = [] }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  // Find if user already borrowed this book and it's still active
+  const activeBorrow = filteredBooks.find(
+    (b) => b.bookId?.toString() === bookId?.toString() && b.status === 'borrowed'
+  );
+
+  const isDueDateOver = activeBorrow
+    ? new Date() > new Date(activeBorrow.dueDate)
+    : false;
 
   const handleBorrow = async () => {
     setLoading(true);
     try {
       const res = await borrowBook(bookId, title);
-
-      if (!res || !res.success) {
-        throw new Error(res?.error || 'Failed to borrow');
-      }
-
+      if (!res || !res.success) throw new Error(res?.error || 'Failed to borrow');
       setOpen(false);
       toast.success('Book borrowed successfully!');
       router.refresh();
@@ -29,13 +34,50 @@ const BorrowButton = ({ bookId, isAvailable, title }) => {
     }
   };
 
+  const handleReturn = async () => {
+    setLoading(true);
+    try {
+      const res = await returnBook(activeBorrow._id);
+      if (!res || !res.success) throw new Error(res?.error || 'Failed to return');
+      toast.success('Book returned successfully!');
+      router.refresh();
+    } catch (err) {
+      toast.error(err.message || 'Failed to return book.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Already borrowed and due date not over — show Return button
+  if (activeBorrow && !isDueDateOver) {
+    return (
+      <div className="flex flex-col gap-2">
+        <button
+          onClick={handleReturn}
+          disabled={loading}
+          className="px-5 py-2 rounded-lg text-sm font-medium text-white w-fit"
+          style={{ backgroundColor: "#659287" }}
+        >
+          {loading ? 'Returning...' : 'Return book'}
+        </button>
+        <p className="text-xs" style={{ color: "#88BDA4" }}>
+          Due: {new Date(activeBorrow.dueDate).toLocaleDateString()}
+        </p>
+      </div>
+    );
+  }
+
+  // Due date over — can borrow again
   return (
     <>
       <button
         onClick={() => setOpen(true)}
         disabled={!isAvailable}
-        className="px-5 py-2 rounded-lg text-sm font-medium text-white"
-        style={{ backgroundColor: isAvailable ? "#659287" : "#B1D3B9", cursor: isAvailable ? "pointer" : "not-allowed" }}
+        className="px-5 py-2 rounded-lg text-sm font-medium text-white w-fit"
+        style={{
+          backgroundColor: isAvailable ? "#659287" : "#B1D3B9",
+          cursor: isAvailable ? "pointer" : "not-allowed",
+        }}
       >
         Borrow book
       </button>
@@ -55,7 +97,6 @@ const BorrowButton = ({ bookId, isAvailable, title }) => {
             <p className="text-sm mb-6" style={{ color: "#88BDA4" }}>
               You'll have 14 days to return this book. Are you sure you want to borrow it?
             </p>
-
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setOpen(false)}
@@ -70,7 +111,7 @@ const BorrowButton = ({ bookId, isAvailable, title }) => {
                 className="px-4 py-2 rounded-lg text-sm font-medium text-white"
                 style={{ backgroundColor: "#659287" }}
               >
-                {loading ? "Borrowing..." : "Yes, borrow"}
+                {loading ? 'Borrowing...' : 'Yes, borrow'}
               </button>
             </div>
           </div>

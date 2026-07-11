@@ -10,63 +10,39 @@ import {
   Input,
   Label,
   TextField,
+  Select,
 } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-const fields = [
-  {
-    name: "name",
-    label: "Full Name",
-    type: "text",
-    placeholder: "John Doe",
-    isRequired: true,
-  },
-  {
-    name: "email",
-    label: "Email",
-    type: "email",
-    placeholder: "john@example.com",
-    isRequired: true,
-    validate: (value) => {
-      if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value))
-        return "Please enter a valid email address";
-      return null;
-    },
-  },
-  {
-    name: "password",
-    label: "Password",
-    type: "password",
-    placeholder: "Enter your password",
-    isRequired: true,
-    description: "Min 8 characters, 1 uppercase, 1 number",
-    validate: (value) => {
-      if (value.length < 8) return "Password must be at least 8 characters";
-      if (!/[A-Z]/.test(value)) return "Must contain at least one uppercase letter";
-      if (!/[0-9]/.test(value)) return "Must contain at least one number";
-      return null;
-    },
-  },
-  {
-    name: "confirmPassword",
-    label: "Confirm Password",
-    type: "password",
-    placeholder: "Re-enter your password",
-    isRequired: true,
-  },
+const departments = [
+  "Computer Science",
+  "Electrical Engineering",
+  "Mechanical Engineering",
+  "Civil Engineering",
+  "Business Administration",
+  "Economics",
+  "English",
+  "Mathematics",
+  "Physics",
+  "Chemistry",
+  "Law",
+  "Medicine",
+  "Architecture",
+  "Other",
 ];
 
 const SignUpPage = () => {
   const router = useRouter();
+
   const onSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const { name, email, password, confirmPassword } = Object.fromEntries(formData.entries());
+    const { name, email, password, roll, dept } = Object.fromEntries(formData.entries());
 
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+    if (!/^\d{6}$/.test(roll)) {
+      toast.error("Roll number must be exactly 6 digits");
       return;
     }
 
@@ -74,24 +50,25 @@ const SignUpPage = () => {
       email,
       password,
       name,
+      roll,
+      dept,
     });
-    if(data){
+
+    if (data) {
       toast.success("Account created successfully!");
-      router.push("/")
+      router.push("/");
     }
 
     if (error) {
       toast.error(error.message);
-      return;
     }
-
   };
+
   return (
     <div
       className="min-h-screen flex items-center justify-center p-6 md:p-10"
       style={{ backgroundColor: "#f0f7ee" }}
     >
-      {/* Card */}
       <div
         className="flex w-full max-w-4xl rounded-2xl overflow-hidden shadow-xl"
         style={{ minHeight: "580px" }}
@@ -137,10 +114,7 @@ const SignUpPage = () => {
         >
           <div className="w-full max-w-sm">
             <div className="mb-7">
-              <h2
-                className="text-2xl font-bold mb-1"
-                style={{ color: "#659287" }}
-              >
+              <h2 className="text-2xl font-bold mb-1" style={{ color: "#659287" }}>
                 Create an account
               </h2>
               <p className="text-sm" style={{ color: "#88BDA4" }}>
@@ -156,38 +130,110 @@ const SignUpPage = () => {
             </div>
 
             <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
-              {fields.map(({ name, label, type, placeholder, isRequired, description, validate }) => (
+
+              {/* Name */}
+              <TextField name="name" isRequired className="w-full">
+                <Label className="text-sm font-medium mb-1 block" style={{ color: "#659287" }}>
+                  Full Name
+                </Label>
+                <Input
+                  placeholder="John Doe"
+                  className="w-full rounded-lg border px-3 py-2 text-sm"
+                  style={{ borderColor: "#B1D3B9", color: "#333" }}
+                />
+                <FieldError className="text-red-500 text-xs mt-1" />
+              </TextField>
+
+              {/* Email */}
+              <TextField
+                name="email"
+                type="email"
+                isRequired
+                className="w-full"
+                validate={(v) =>
+                  !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(v)
+                    ? "Please enter a valid email address"
+                    : null
+                }
+              >
+                <Label className="text-sm font-medium mb-1 block" style={{ color: "#659287" }}>
+                  Email
+                </Label>
+                <Input
+                  placeholder="john@example.com"
+                  className="w-full rounded-lg border px-3 py-2 text-sm"
+                  style={{ borderColor: "#B1D3B9", color: "#333" }}
+                />
+                <FieldError className="text-red-500 text-xs mt-1" />
+              </TextField>
+
+              {/* Roll & Dept — side by side */}
+              <div className="flex gap-3">
                 <TextField
-                  key={name}
-                  name={name}
-                  type={type}
-                  isRequired={isRequired}
-                  validate={validate}
+                  name="roll"
+                  isRequired
                   className="w-full"
+                  validate={(v) =>
+                    !/^\d{6}$/.test(v) ? "Must be exactly 6 digits" : null
+                  }
                 >
-                  <Label
-                    className="text-sm font-medium mb-1 block"
-                    style={{ color: "#659287" }}
-                  >
-                    {label}
+                  <Label className="text-sm font-medium mb-1 block" style={{ color: "#659287" }}>
+                    Roll No.
                   </Label>
                   <Input
-                    placeholder={placeholder}
+                    placeholder="123456"
+                    maxLength={6}
                     className="w-full rounded-lg border px-3 py-2 text-sm"
-                    style={{
-                      backgroundColor: "#fff",
-                      borderColor: "#B1D3B9",
-                      color: "#333",
-                    }}
+                    style={{ borderColor: "#B1D3B9", color: "#333" }}
                   />
-                  {description && (
-                    <Description className="text-xs mt-1" style={{ color: "#88BDA4" }}>
-                      {description}
-                    </Description>
-                  )}
                   <FieldError className="text-red-500 text-xs mt-1" />
                 </TextField>
-              ))}
+
+                <TextField name="dept" isRequired className="w-full">
+                  <Label className="text-sm font-medium mb-1 block" style={{ color: "#659287" }}>
+                    Department
+                  </Label>
+                  <select
+                    name="dept"
+                    required
+                    className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+                    style={{ borderColor: "#B1D3B9", color: "#333", height: "38px" }}
+                  >
+                    <option value="">Select dept</option>
+                    {departments.map((d) => (
+                      <option key={d} value={d}>{d}</option>
+                    ))}
+                  </select>
+                  <FieldError className="text-red-500 text-xs mt-1" />
+                </TextField>
+              </div>
+
+              {/* Password */}
+              <TextField
+                name="password"
+                type="password"
+                isRequired
+                className="w-full"
+                validate={(v) => {
+                  if (v.length < 8) return "Password must be at least 8 characters";
+                  if (!/[A-Z]/.test(v)) return "Must contain at least one uppercase letter";
+                  if (!/[0-9]/.test(v)) return "Must contain at least one number";
+                  return null;
+                }}
+              >
+                <Label className="text-sm font-medium mb-1 block" style={{ color: "#659287" }}>
+                  Password
+                </Label>
+                <Input
+                  placeholder="Enter your password"
+                  className="w-full rounded-lg border px-3 py-2 text-sm"
+                  style={{ borderColor: "#B1D3B9", color: "#333" }}
+                />
+                <Description className="text-xs mt-1" style={{ color: "#88BDA4" }}>
+                  Min 8 characters, 1 uppercase, 1 number
+                </Description>
+                <FieldError className="text-red-500 text-xs mt-1" />
+              </TextField>
 
               <Button
                 type="submit"

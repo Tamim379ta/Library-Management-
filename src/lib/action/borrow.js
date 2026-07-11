@@ -10,3 +10,9 @@ export const borrowBook = async (bookId, title) => {
  
   return await serverMutation('/borrows', { bookId , userId, title });
 }
+export const returnBook = async (borrowId) => {
+  return await serverMutation(`/borrows/${borrowId}/return`, {}, 'PATCH');
+};
+export const deleteBorrow = async (borrowId) => {
+  return await serverMutation(`/borrows/${borrowId}`, {}, 'DELETE');
+}
