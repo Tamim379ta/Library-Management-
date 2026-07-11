@@ -1,12 +1,12 @@
 import { Table, Button, Chip } from '@heroui/react';
-import { getAllBooks } from '@/lib/api/book';
 import Image from 'next/image';
 import React from 'react';
 import EditBookModal from '@/components/admin/EditBookModal ';
 import DeleteBookModal from '@/components/admin/DeleteBookModal';
+import { manageBooks } from '@/lib/api/book';
 
 const ManageBooks = async () => {
-  const books = await getAllBooks();
+  const books = await manageBooks();
 
   return (
     <div>
