@@ -103,6 +103,7 @@ const BookDetailsPage = async ({ params }) => {
               isAvailable={isAvailable}
               title={book.title}
               filteredBooks={filteredBooks}
+              userId={userId}
             />
           </div>
         </div>

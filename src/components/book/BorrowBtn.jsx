@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { borrowBook, returnBook } from '@/lib/action/borrow';
 import toast from 'react-hot-toast';
 
-const BorrowButton = ({ bookId, isAvailable, title, filteredBooks = [] }) => {
+const BorrowButton = ({ bookId, isAvailable, title, filteredBooks = [], userId }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -20,6 +20,11 @@ const BorrowButton = ({ bookId, isAvailable, title, filteredBooks = [] }) => {
     : false;
 
   const handleBorrow = async () => {
+    if (!userId) {
+      toast.error('Please sign in to borrow a book');
+      router.push('/signin');
+      return;
+    }
     setLoading(true);
     try {
       const res = await borrowBook(bookId, title);
