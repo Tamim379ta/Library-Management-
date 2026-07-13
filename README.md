@@ -1,36 +1,125 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 📚 BookBridge
 
-## Getting Started
+A university library management system that lets students discover and borrow books while giving administrators full control over the library's catalog and operations.
 
-First, run the development server:
+🔗 **Live Demo:** [click here](https://library-management-eight-chi-66.vercel.app/)
+
+---
+
+## ✨ Features
+
+### 👨‍🎓 Student
+- Browse and search the book catalog with server-side filtering and pagination
+- Borrow books and track due dates
+- View borrowing history and current loans
+
+### 🛠️ Admin
+- Full dashboard to manage books, users, and borrow records
+- Add, edit, and remove books with cover image uploads
+- Monitor active loans and process returns
+
+---
+
+## 🧰 Tech Stack
+
+**Frontend**
+- [Next.js 15](https://nextjs.org/) — App Router, Server Components
+- [TypeScript](https://www.typescriptlang.org/)
+- [HeroUI](https://www.heroui.com/) — UI component library
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Framer Motion](https://www.framer.com/motion/) — animations
+- [Better Auth](https://better-auth.com/) — authentication
+
+**Backend**
+- [Express.js](https://expressjs.com/)
+- [MongoDB](https://www.mongodb.com/) with Mongoose
+- [ImgBB](https://imgbb.com/) — image hosting
+
+**Deployment**
+- Frontend → [Vercel](https://vercel.com/)
+- Backend → [Render](https://render.com/)
+- Database → [MongoDB Atlas](https://www.mongodb.com/atlas)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- MongoDB Atlas cluster
+- ImgBB API key
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/bookbridge.git
+cd bookbridge
+```
+
+### 2. Set up the backend
+
+```bash
+cd server
+npm install
+```
+
+Create a `.env` file in the `server` directory:
+
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_atlas_connection_string
+CLIENT_URL=http://localhost:3000
+```
+
+Start the server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Set up the frontend
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+cd client
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file in the `client` directory:
 
-## Learn More
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000
+BETTER_AUTH_SECRET=your_better_auth_secret
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_IMGBB_API_KEY=your_imgbb_api_key
+```
 
-To learn more about Next.js, take a look at the following resources:
+Start the development server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📁 Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+bookbridge/
+├── client/          # Next.js frontend
+│   ├── app/         # App Router pages and layouts
+│   ├── components/  # Reusable UI components
+│   └── lib/         # Utilities and auth config
+└── server/          # Express.js backend
+    ├── routes/      # API route handlers
+    ├── models/      # Mongoose models
+    └── middleware/  # Auth and error middleware
+```
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
