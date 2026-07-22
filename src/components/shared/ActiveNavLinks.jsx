@@ -19,8 +19,6 @@ const adminNavItems = [
   { icon: BookOpen, label: "Manage Books", href: "/dashboard/admin/manage-books" },
   { icon: Plus, label: "Add Book", href: "/dashboard/admin/add-book" },
   { icon: SquareListUl, label: "All Borrows", href: "/dashboard/admin/all-borrows" },
-  { icon: ChartMixed, label: "Analytics", href: "/dashboard/admin/analytics" },
-  { icon: Gear, label: "Settings", href: "/dashboard/admin/settings" },
 ];
 
 const studentNavItems = [
