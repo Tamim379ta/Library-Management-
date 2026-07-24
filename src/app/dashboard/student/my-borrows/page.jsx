@@ -1,14 +1,16 @@
-import { Table, Button, Chip } from '@heroui/react';
+import { Table, Chip } from '@heroui/react';
 import { getBorrowedBooks } from '@/lib/api/borrow';
 import { getUserSession } from '@/lib/core/session';
 import React from 'react';
 import DeleteBorrowModal from '@/components/student/DeleteBorrowModal';
+import ReturnButton from '@/components/student/ReturnButton';
 
 const MyBorrowBooks = async () => {
   const borrowedBooks = await getBorrowedBooks();
   const user = await getUserSession();
   const userId = user?.id;
   const filteredBooks = borrowedBooks.filter((borrow) => borrow.userId === userId);
+
 
   return (
     <div>
@@ -42,7 +44,12 @@ const MyBorrowBooks = async () => {
                     </Chip>
                   </Table.Cell>
                   <Table.Cell>
-                    <DeleteBorrowModal borrow={borrow} />
+                    <div className="flex items-center gap-2">
+                      {borrow.status === 'borrowed' && (
+                        <ReturnButton borrowId={borrow._id} />
+                      )}
+                      <DeleteBorrowModal borrow={borrow} />
+                    </div>
                   </Table.Cell>
                 </Table.Row>
               ))}
